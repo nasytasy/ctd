@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f2f2f2;
+            transition: background-color 1s;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .time {
+            margin: 0 20px;
+            font-size: 2rem;
+            color: #87ceeb; /* Light Sky Blue */
+            transition: color 0.5s;
+        }
+
+        #seconds {
+            transition: color 0.5s, font-size 0.5s;
+        }
+
+        .green {
+            color: green;
+        }
+
+        .yellow {
+            color: yellow;
+        }
+
+        .red {
+            color: red;
+        }
+
+        @keyframes colorChange {
+            0% { color: #87ceeb; } /* Light Sky Blue */
+            50% { color: #1e90ff; } /* Dodger Blue */
+            100% { color: #87ceeb; } /* Light Sky Blue */
+        }
+    </style>
+    <title>Countdown Timer</title>
+</head>
+<body>
+    <div class="countdown">
+        <div id="days" class="time"></div>
+        <div id="hours" class="time"></div>
+        <div id="minutes" class="time"></div>
+        <div id="seconds" class="time"></div>
+    </div>
+    <script>
+        function updateCountdown() {
+            const targetDate = new Date("2023-08-10T05:00:00Z"); // 6am UTC+1
+            const currentDate = new Date();
+            const timeDifference = targetDate - currentDate;
+
+            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+            document.getElementById("days").textContent = `${days}d`;
+            document.getElementById("hours").textContent = `${hours}h`;
+
+            if (timeDifference > 10 * 60 * 60 * 1000) { // More than 10 hours
+                document.getElementById("minutes").classList.add("green");
+                document.getElementById("seconds").classList.add("green");
+            } else {
+                document.getElementById("minutes").classList.remove("green");
+                document.getElementById("seconds").classList.remove("green");
+
+                if (timeDifference > 5 * 60 * 60 * 1000) { // Between 5 to 10 hours
+                    document.getElementById("minutes").classList.add("yellow");
+                    document.getElementById("seconds").classList.add("yellow");
+                } else {
+                    document.getElementById("minutes").classList.remove("yellow");
+                    document.getElementById("seconds").classList.remove("yellow");
+
+                    if (timeDifference <= 5 * 60 * 60 * 1000) { // Under 5 hours
+                        document.getElementById("minutes").classList.add("red");
+                        document.getElementById("seconds").classList.add("red");
+                    } else {
+                        document.getElementById("minutes").classList.remove("red");
+                        document.getElementById("seconds").classList.remove("red");
+                    }
+                }
+            }
+
+            document.getElementById("minutes").textContent = `${minutes}m`;
+            document.getElementById("seconds").textContent = `${seconds}s`;
+        }
+
+        updateCountdown();
+        setInterval(() => {
+            updateCountdown();
+            document.getElementById("seconds").style.animation = "colorChange 1s";
+            setTimeout(() => {
+                document.getElementById("seconds").style.animation = "none";
+            }, 1000);
+        }, 1000);
+    </script>
+</body>
+</html>
